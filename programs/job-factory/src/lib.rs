@@ -4,7 +4,7 @@ declare_id!("Fg6PaFpoGXkYsidMpWTK6W2BeZ7FEfcYkg476zPFsLnS");
 
 const JOB_SETTINGS_SEED: &'static [u8] = b"JOB_SETTINGS";
 #[program]
-pub mod staking {
+pub mod job_factory {
     use super::*;
 
     pub fn initialize(

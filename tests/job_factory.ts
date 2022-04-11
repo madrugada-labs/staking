@@ -1,14 +1,14 @@
 import * as anchor from "@project-serum/anchor";
 import { Program } from "@project-serum/anchor";
 const assert = require("assert");
-import { Staking } from "../target/types/staking";
+import { JobFactory } from "../target/types/job_factory";
 
 describe("staking", () => {
   // Configure the client to use the local cluster.
   const provider = anchor.Provider.env();
   anchor.setProvider(anchor.Provider.env());
 
-  const program = anchor.workspace.Staking as Program<Staking>;
+  const program = anchor.workspace.JobFactory as Program<JobFactory>;
   const keyPair = anchor.web3.Keypair.generate();
 
 
