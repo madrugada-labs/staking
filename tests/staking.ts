@@ -49,7 +49,7 @@ describe("staking", () => {
       },
       signers: [keyPair]
     });
-    const settingsAccountState = await program.account.settings.fetch(settingsAccount);
+    const settingsAccountState = await program.account.jobStakingSettings.fetch(settingsAccount);
     assert.strictEqual(jobAdId, settingsAccountState.jobAdId );
     assert.strictEqual(maxAmountStakedPerApplication, settingsAccountState.maxAmountPerApplication );
     assert.strictEqual(settingsAccountState.authority,  settingsAccountState.authority );

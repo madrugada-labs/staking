@@ -41,7 +41,7 @@ pub struct InitializeJobStaking<'info> {
     seeds = [JOB_SETTINGS_SEED, job_ad_id.to_be_bytes().as_ref()],
     bump,
     space = 8 + 32 + 4 + 4)]
-    pub settings: Account<'info, Settings>,
+    pub settings: Account<'info, JobStakingSettings>,
 
     #[account(mut)]
     pub authority: Signer<'info>,
@@ -55,7 +55,7 @@ pub struct InitializeApplicationStaking<'info> {
     seeds = [JOB_SETTINGS_SEED, job_ad_id.to_be_bytes().as_ref()],
     bump = job_settings_bump
     )]
-    pub settings: Account<'info, Settings>,
+    pub settings: Account<'info, JobStakingSettings>,
 
     // ensures that the signer of this transaction is the same that created the job
     // contract
@@ -64,7 +64,7 @@ pub struct InitializeApplicationStaking<'info> {
 }
 
 #[account]
-pub struct Settings {
+pub struct JobStakingSettings {
     pub authority: Pubkey,               // 32 bytes
     pub job_ad_id: u32,                  // 4 bytes
     pub max_amount_per_application: u32, // 4 bytes
