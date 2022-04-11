@@ -3,7 +3,7 @@ import { Program } from "@project-serum/anchor";
 const assert = require("assert");
 import { JobFactory } from "../target/types/job_factory";
 
-describe("staking", () => {
+describe("job-factory", () => {
   // Configure the client to use the local cluster.
   const provider = anchor.Provider.env();
   anchor.setProvider(anchor.Provider.env());
