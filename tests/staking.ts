@@ -28,9 +28,6 @@ describe("staking", () => {
   });
 
   it("Is initialized!", async () => {
-    // Add your test here.
-    // const tx = await program.rpc.initialize(12, {});
-
     const jobAdId = 123;
     let arr = new ArrayBuffer(4); // an Int32 takes 4 bytes
     let view = new DataView(arr);
