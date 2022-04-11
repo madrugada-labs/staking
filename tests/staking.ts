@@ -28,17 +28,18 @@ describe("staking", () => {
   });
 
   it("Initializes jobStakingContract", async () => {
-    console.log(keyPair.publicKey);
     const jobAdId = 123;
     const maxAmountStakedPerApplication = 10000;
     let arr = new ArrayBuffer(4); // an Int32 takes 4 bytes
     let view = new DataView(arr);
     view.setUint32(0, jobAdId, false); // byteOffset = 0; litteEndian = false
-
-    const [settingsAccount] = await anchor.web3.PublicKey.findProgramAddress(
+    
+    const [settingsAccount, b] = await anchor.web3.PublicKey.findProgramAddress(
       [Buffer.from("JOB_SETTINGS"), Buffer.from(arr)],
       program.programId
-    );
+      );
+      console.log(settingsAccount);
+      console.log(b);
 
     const tx = await program.rpc.initialize(jobAdId, maxAmountStakedPerApplication, {
       accounts: {
@@ -68,10 +69,12 @@ describe("staking", () => {
       [Buffer.from("JOB_SETTINGS"), Buffer.from(arr)],
       program.programId
     );
+    console.log(settingsAccountWitBump);
+    console.log(settingsAccountBump);
 
     const tx = await program.rpc.initializeApplicationStaking(jobAdId, settingsAccountBump, {
       accounts: {
-        signer: keyPair.publicKey, 
+        authority: keyPair.publicKey, 
         settings: settingsAccountWitBump,
       },
       signers: [keyPair]

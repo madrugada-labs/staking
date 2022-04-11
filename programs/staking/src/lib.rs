@@ -55,11 +55,12 @@ pub struct InitializeApplicationStaking<'info> {
     seeds = [JOB_SETTINGS_SEED, job_ad_id.to_be_bytes().as_ref()],
     bump = job_settings_bump
     )]
+    pub settings: Account<'info, Settings>,
+
     // ensures that the signer of this transaction is the same that created the job
     // contract
-    pub signer: Signer<'info>,
-    #[account(constraint = signer.key() == settings.authority)]
-    pub settings: Account<'info, Settings>,
+    #[account(constraint = authority.key() == settings.authority)]
+    pub authority: Signer<'info>,
 }
 
 #[account]
