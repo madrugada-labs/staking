@@ -31,12 +31,17 @@ describe("staking", () => {
     // Add your test here.
     // const tx = await program.rpc.initialize(12, {});
 
+    const jobAdId = 123;
+    let arr = new ArrayBuffer(4); // an Int32 takes 4 bytes
+    let view = new DataView(arr);
+    view.setUint32(0, jobAdId, false); // byteOffset = 0; litteEndian = false
+
     const [settingsAccount] = await anchor.web3.PublicKey.findProgramAddress(
-      [Buffer.from("JOB_SETTINGS")],
+      [Buffer.from("JOB_SETTINGS"), Buffer.from(arr)],
       program.programId
     );
 
-    const tx = await program.rpc.initialize(1, {
+    const tx = await program.rpc.initialize(jobAdId, {
       accounts: {
         authority: keyPair.publicKey, 
         systemProgram: anchor.web3.SystemProgram.programId,
@@ -45,6 +50,6 @@ describe("staking", () => {
       signers: [keyPair]
     });
     const settingsAccountState = await program.account.settings.fetch(settingsAccount);
-    assert.strictEqual(1, settingsAccountState.jobAdId );
+    assert.strictEqual(jobAdId, settingsAccountState.jobAdId );
   });
 });
