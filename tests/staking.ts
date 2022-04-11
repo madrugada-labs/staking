@@ -27,8 +27,9 @@ describe("staking", () => {
 
   });
 
-  it("Is initialized!", async () => {
+  it("Initializes jobStakingContract", async () => {
     const jobAdId = 123;
+    const maxAmountStakedPerApplication = 10000;
     let arr = new ArrayBuffer(4); // an Int32 takes 4 bytes
     let view = new DataView(arr);
     view.setUint32(0, jobAdId, false); // byteOffset = 0; litteEndian = false
@@ -38,7 +39,7 @@ describe("staking", () => {
       program.programId
     );
 
-    const tx = await program.rpc.initialize(jobAdId, {
+    const tx = await program.rpc.initialize(jobAdId, maxAmountStakedPerApplication, {
       accounts: {
         authority: keyPair.publicKey, 
         systemProgram: anchor.web3.SystemProgram.programId,
@@ -48,5 +49,9 @@ describe("staking", () => {
     });
     const settingsAccountState = await program.account.settings.fetch(settingsAccount);
     assert.strictEqual(jobAdId, settingsAccountState.jobAdId );
+
+    // check how much it costs
+    const userBalance = await provider.connection.getBalance(keyPair.publicKey);
+    assert.strictEqual(10000000000 - 1002240, userBalance );
   });
 });
