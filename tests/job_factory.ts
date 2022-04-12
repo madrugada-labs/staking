@@ -28,14 +28,11 @@ describe("job-factory", () => {
   });
 
   it("Initializes jobStakingContract", async () => {
-    const jobAdId = 123;
+    const jobAdId = "123";
     const maxAmountStakedPerApplication = 10000;
-    let arr = new ArrayBuffer(4); // an Int32 takes 4 bytes
-    let view = new DataView(arr);
-    view.setUint32(0, jobAdId, false); // byteOffset = 0; litteEndian = false
     
     const [settingsAccount, b] = await anchor.web3.PublicKey.findProgramAddress(
-      [Buffer.from("JOB_SETTINGS"), Buffer.from(arr)],
+      [Buffer.from("JOB_SETTINGS"), Buffer.from(jobAdId)],
       program.programId
       );
       console.log(settingsAccount);
@@ -56,17 +53,14 @@ describe("job-factory", () => {
 
     // check how much it costs
     const userBalance = await provider.connection.getBalance(keyPair.publicKey);
-    assert.strictEqual(9998775040, userBalance );
+    assert.strictEqual(9998691520, userBalance );
   });
 
   it("Initializes application staking", async () => {
-    const jobAdId = 123;
-    let arr = new ArrayBuffer(4); // an Int32 takes 4 bytes
-    let view = new DataView(arr);
-    view.setUint32(0, jobAdId, false); // byteOffset = 0; litteEndian = false
+    const jobAdId = "123";
 
     const [settingsAccountWitBump, settingsAccountBump] = await anchor.web3.PublicKey.findProgramAddress(
-      [Buffer.from("JOB_SETTINGS"), Buffer.from(arr)],
+      [Buffer.from("JOB_SETTINGS"), Buffer.from(jobAdId)],
       program.programId
     );
     console.log(settingsAccountWitBump);
@@ -82,6 +76,6 @@ describe("job-factory", () => {
     
     // check how much it costs
     const userBalance = await provider.connection.getBalance(keyPair.publicKey);
-    assert.strictEqual(9998775040, userBalance );
+    assert.strictEqual(9998691520, userBalance );
   });
 });

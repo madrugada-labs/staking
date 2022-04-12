@@ -9,7 +9,7 @@ pub mod job_factory {
 
     pub fn initialize(
         ctx: Context<InitializeJobStaking>,
-        job_ad_id: u32,
+        job_ad_id: String,
         max_amount_per_application: u32,
     ) -> Result<()> {
         // populate settings parameters
@@ -21,7 +21,7 @@ pub mod job_factory {
 
     pub fn initialize_application_staking(
         ctx: Context<InitializeApplicationStaking>,
-        _job_ad_id: u32,
+        _job_ad_id: String,
         _job_settings_bump: u8,
     ) -> Result<()> {
         let settings = &ctx.accounts.settings;
@@ -34,13 +34,13 @@ pub mod job_factory {
 }
 
 #[derive(Accounts)]
-#[instruction(job_ad_id: u32)]
+#[instruction(job_ad_id: String)]
 pub struct InitializeJobStaking<'info> {
     #[account(init,
     payer = authority,
-    seeds = [JOB_SETTINGS_SEED, job_ad_id.to_be_bytes().as_ref()],
+    seeds = [JOB_SETTINGS_SEED, job_ad_id.as_bytes().as_ref()],
     bump,
-    space = 8 + 32 + 4 + 4)]
+    space = 8 + 32 + 16 + 4)]
     pub settings: Account<'info, JobStakingSettings>,
 
     #[account(mut)]
@@ -49,10 +49,10 @@ pub struct InitializeJobStaking<'info> {
 }
 
 #[derive(Accounts)]
-#[instruction(job_ad_id: u32, job_settings_bump: u8)]
+#[instruction(job_ad_id: String, job_settings_bump: u8)]
 pub struct InitializeApplicationStaking<'info> {
     #[account(
-    seeds = [JOB_SETTINGS_SEED, job_ad_id.to_be_bytes().as_ref()],
+    seeds = [JOB_SETTINGS_SEED, job_ad_id.as_bytes().as_ref()],
     bump = job_settings_bump
     )]
     pub settings: Account<'info, JobStakingSettings>,
@@ -66,7 +66,7 @@ pub struct InitializeApplicationStaking<'info> {
 #[account]
 pub struct JobStakingSettings {
     pub authority: Pubkey,               // 32 bytes
-    pub job_ad_id: u32,                  // 4 bytes
+    pub job_ad_id: String,               // 16 bytes
     pub max_amount_per_application: u32, // 4 bytes
 }
 
