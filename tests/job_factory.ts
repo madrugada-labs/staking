@@ -2,6 +2,7 @@ import * as anchor from "@project-serum/anchor";
 import { Program } from "@project-serum/anchor";
 const assert = require("assert");
 import { JobFactory } from "../target/types/job_factory";
+import {v4 as uuidv4} from "uuid";
 
 describe("job-factory", () => {
   // Configure the client to use the local cluster.
@@ -26,13 +27,15 @@ describe("job-factory", () => {
     assert.strictEqual(10000000000, userBalance );
 
   });
+  const jobAdId = uuidv4();
 
   it("Initializes jobStakingContract", async () => {
-    const jobAdId = "123";
+
     const maxAmountStakedPerApplication = 10000;
     
     const [settingsAccount, b] = await anchor.web3.PublicKey.findProgramAddress(
-      [Buffer.from("JOB_SETTINGS"), Buffer.from(jobAdId)],
+      // we need to do this because the seed has a max size; seeds are split.
+      [Buffer.from("JOB_SETTINGS"), Buffer.from(jobAdId.substring(0, 18)), Buffer.from(jobAdId.substring(18, 36))],
       program.programId
       );
       console.log(settingsAccount);
@@ -53,14 +56,12 @@ describe("job-factory", () => {
 
     // check how much it costs
     const userBalance = await provider.connection.getBalance(keyPair.publicKey);
-    assert.strictEqual(9998691520, userBalance );
+    assert.strictEqual(9998524480, userBalance );
   });
 
   it("Initializes application staking", async () => {
-    const jobAdId = "123";
-
     const [settingsAccountWitBump, settingsAccountBump] = await anchor.web3.PublicKey.findProgramAddress(
-      [Buffer.from("JOB_SETTINGS"), Buffer.from(jobAdId)],
+      [Buffer.from("JOB_SETTINGS"), Buffer.from(jobAdId.substring(0, 18)), Buffer.from(jobAdId.substring(18, 36))],
       program.programId
     );
     console.log(settingsAccountWitBump);
@@ -76,6 +77,6 @@ describe("job-factory", () => {
     
     // check how much it costs
     const userBalance = await provider.connection.getBalance(keyPair.publicKey);
-    assert.strictEqual(9998691520, userBalance );
+    assert.strictEqual(9998524480, userBalance );
   });
 });
