@@ -597,6 +597,7 @@ name = "job-factory"
 version = "0.1.0"
 dependencies = [
  "anchor-lang",
+ "job-application",
 ]
 
 [[package]]
