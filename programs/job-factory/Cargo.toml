@@ -17,3 +17,4 @@ default = []
 
 [dependencies]
 anchor-lang = "0.23.0"
+job-application = {path = "../job-application", features = ["cpi"]}

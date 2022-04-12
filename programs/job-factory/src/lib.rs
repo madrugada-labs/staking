@@ -1,10 +1,13 @@
 use anchor_lang::prelude::*;
+use job_application::program::JobApplication;
 
 declare_id!("Fg6PaFpoGXkYsidMpWTK6W2BeZ7FEfcYkg476zPFsLnS");
 
 const JOB_SETTINGS_SEED: &'static [u8] = b"JOB_SETTINGS";
 #[program]
 pub mod job_factory {
+    use job_application::{cpi::accounts::Initialize, JobApplicationStakingParameters};
+
     use super::*;
 
     pub fn initialize(
@@ -25,11 +28,21 @@ pub mod job_factory {
         _job_settings_bump: u8,
     ) -> Result<()> {
         let settings = &ctx.accounts.settings;
-        let _staking_parameters = StakingParameters {
-            max_amount_per_application: settings.max_amount_per_application,
-            authority: settings.authority,
+
+        let initialize = Initialize {
+            settings: todo!(),
+            signer: todo!(),
+            system_program: todo!(),
         };
-        Ok(())
+        let staking_parameters = JobApplicationStakingParameters {
+            max_amount_per_application: settings.max_amount_per_application,
+            authority: ctx.program_id.clone(),
+        };
+
+        let cpi_program = ctx.accounts.job_application_program.to_account_info();
+
+        let cpi_ctx = CpiContext::new(cpi_program, initialize);
+        job_application::cpi::initialize(cpi_ctx, staking_parameters)
     }
 }
 
@@ -61,6 +74,8 @@ pub struct InitializeApplicationStaking<'info> {
     // contract
     #[account(constraint = authority.key() == settings.authority)]
     pub authority: Signer<'info>,
+
+    pub job_application_program: Program<'info, JobApplication>,
 }
 
 #[account]
@@ -68,11 +83,4 @@ pub struct JobStakingSettings {
     pub authority: Pubkey,               // 32 bytes
     pub job_ad_id: String,               // 40 bytes
     pub max_amount_per_application: u32, // 4 bytes
-}
-
-pub struct StakingParameters {
-    // sets how much can be staked on an applicant
-    pub max_amount_per_application: u32,
-    // defines the authority of downstream programs
-    pub authority: Pubkey,
 }
